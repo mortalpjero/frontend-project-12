@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <div className='baya'>Бая, ты мой пупсик</div>
+    <div>Hello World!</div>
   </React.StrictMode>
 );
 
