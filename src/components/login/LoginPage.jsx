@@ -5,10 +5,8 @@ import LoginFormComponent from './loginFormComponent';
 // import { loginPath } from '../../routes/routes';
 
 const SignupSchema = Yup.object().shape({
-  login: Yup.string()
-    .min(5, 'Минимум 5 символов'),
-  password: Yup.string()
-    .min(5, 'Минимум 5 символов'),
+  username: Yup.string(),
+  password: Yup.string(),
 });
 
 const LoginPage = () => (

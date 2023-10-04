@@ -1,21 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import { Button, FloatingLabel, Form } from 'react-bootstrap';
+import axios from 'axios';
+import classNames from 'classnames';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import { loginPath } from '../../routes/routes';
+import { authorize } from '../../slices/authorizationSlice';
 
 const LoginFormComponent = ({ validation }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [loginStatus, setLoginStatus] = useState('pending');
+  const controlClasses = classNames('form-constrol', loginStatus === 'unauthorized' ? 'is-invalid' : '');
+
   const formik = useFormik({
     initialValues: {
-      login: '',
+      username: '',
       password: '',
     },
     validationSchema: validation,
-    onSubmit: (values) => {
-      console.log(values.login);
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post(loginPath(), values);
+        const { token, username } = response.data;
+        localStorage.setItem('Authorization', `Bearer ${token}`);
+        dispatch(authorize({ username, token }));
+        setLoginStatus('authorized');
+        navigate('/');
+      } catch (e) {
+        setLoginStatus('unauthorized');
+      }
     },
   });
 
   const { login, password } = formik.values;
-  const { errors, touched, handleChange } = formik;
+  const { handleChange } = formik;
 
   return (
     <Form onSubmit={formik.handleSubmit} className="d-grid col-12 col-md-6 mt-3 mt-mb-0">
@@ -26,12 +47,12 @@ const LoginFormComponent = ({ validation }) => {
           className="mb-3"
         >
           <Form.Control
-            name="login"
+            name="username"
             autoComplete="username"
             required=""
             placeholder="Ваш ник"
             id="username"
-            className="form-control"
+            className={controlClasses}
             onChange={handleChange}
             value={login}
           />
@@ -49,14 +70,12 @@ const LoginFormComponent = ({ validation }) => {
             placeholder="Пароль"
             type="password"
             id="password"
-            className="form-control"
+            className={controlClasses}
             onChange={handleChange}
             value={password}
           />
+          {loginStatus === 'unauthorized' && <Form.Text className="invalid-tooltip d-block">Неверные имя пользователя или пароль</Form.Text>}
         </FloatingLabel>
-        {(errors.password && touched.password) || (errors.login && touched.login) ? (
-          <div className="invalid-tooltip">Логин и Пароль должны иметь минимум 5 символов!</div>
-        ) : null}
       </Form.Group>
       <Button variant="outline-primary" size="lg" type="submit">Войти</Button>
     </Form>
