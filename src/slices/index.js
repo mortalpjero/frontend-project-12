@@ -1,9 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authorizationSlice from './authorizationSlice';
+import channelsSlice from './channelsSlice';
+import messagesSlice from './messagesSlice';
 
 export default configureStore({
   reducer: {
-    // Свойство counter будет внутри объекта общего состояния: state.counter
     authorizationInfo: authorizationSlice,
+    channelsInfo: channelsSlice,
+    messagesInfo: messagesSlice,
   },
 });
