@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import getData from './getData';
@@ -12,24 +12,27 @@ const ChatPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const authToken = localStorage.getItem('Authorization');
+  const currChannel = useSelector((state) => state.channelsInfo.currChannel);
+  const channelTitle = `# ${currChannel.name}`;
 
   useEffect(() => {
     if (!authToken) {
       navigate('/login');
     }
+    if (authToken) {
+      getData(authToken)
+        .then((response) => response.data)
+        .then((data) => {
+          data.channels.forEach((channel) => {
+            dispatch(addChannel(channel));
+          });
+          data.messages.forEach((message) => {
+            dispatch(addMessage(message));
+          });
+        })
+        .catch((error) => console.error('Error:', error));
+    }
   }, [authToken, navigate]);
-
-  getData(authToken)
-    .then((response) => response.data)
-    .then((data) => {
-      data.channels.forEach((channel) => {
-        dispatch(addChannel(channel));
-      });
-      data.messages.forEach((message) => {
-        dispatch(addMessage(message));
-      });
-    })
-    .catch((error) => console.error('Error:', error));
 
   return (
     <div className="h-100" id="chat">
@@ -54,7 +57,7 @@ const ChatPage = () => {
               <div className="d-flex flex-column h-100">
                 <div className="bg-light mb-4 p-3 shadow-sm small">
                   <p className="m-0">
-                    <b># general</b>
+                    <b>{channelTitle}</b>
                   </p>
                   <span className="text-muted">0 сообщений</span>
                 </div>

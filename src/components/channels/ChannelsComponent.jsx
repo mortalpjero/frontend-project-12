@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
 
+import { changeCurrChannel } from '../../slices/channelsSlice';
+
 const ChannelsComponent = () => {
+  const dispatch = useDispatch();
   const channels = useSelector((state) => state.channelsInfo.channels);
-  const [pressedBtn, setPressedBtn] = useState(1);
+  const currChannel = useSelector((state) => state.channelsInfo.currChannel);
+  const currChannelId = currChannel.id;
 
   const processedChannels = channels.map((channel) => {
     const { id, name } = channel;
@@ -13,11 +17,11 @@ const ChannelsComponent = () => {
       'rounded-0',
       'text-start',
       'btn',
-      id === pressedBtn ? 'btn-secondary' : '',
+      id === currChannelId ? 'btn-secondary' : '',
     );
     return (
       <li className="nav-item w-100" key={id}>
-        <button type="button" className={itemClassNames} onClick={() => setPressedBtn(id)}>
+        <button type="button" className={itemClassNames} onClick={() => dispatch(changeCurrChannel(channel))}>
           <span className="me-1">#</span>
           {name}
         </button>
