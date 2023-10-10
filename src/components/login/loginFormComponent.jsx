@@ -26,6 +26,7 @@ const LoginFormComponent = ({ validation }) => {
         const response = await axios.post(loginPath(), values);
         const { token, username } = response.data;
         localStorage.setItem('Authorization', token);
+        localStorage.setItem('username', username);
         dispatch(authorize({ username }));
         setLoginStatus('authorized');
         navigate('/');
