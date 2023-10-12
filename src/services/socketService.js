@@ -1,8 +1,11 @@
 import { io } from 'socket.io-client';
 
-const socket = io();
+const socket = io({
+  reconnectionAttempts: 5,
+  reconnectionDelay: 1000,
+});
 
-// Creating sunscriptions
+// Creating subscriptions
 
 const createSocketSubscription = (event, callback) => {
   socket.on(event, (payload) => {
