@@ -9,7 +9,7 @@ const MessagesFormComponent = () => {
   const [inputStatus, setInputStatus] = useState('invalid');
   const currChannel = useSelector((state) => state.channelsInfo.currChannel);
 
-  const handleSendMessage = async (targetSubmit) => {
+  const handleSendMessage = (targetSubmit) => {
     targetSubmit.preventDefault();
     const username = localStorage.getItem('username');
     const newMessage = {
@@ -17,14 +17,15 @@ const MessagesFormComponent = () => {
       channelId: currChannel.id,
       username,
     };
-    try {
-      await emitNewMessage(newMessage);
+    emitNewMessage(newMessage, (confirmation) => {
+      if (confirmation === 'success') {
+        setInputStatus('valid');
+      } else {
+        setInputStatus('invalid');
+        console.error('Message did not send, try again later');
+      }
       setMessage('');
-      setInputStatus('invalid');
-    } catch (e) {
-      console.error(`Could not send a message: ${e}`);
-      setInputStatus('invalid');
-    }
+    });
   };
 
   const onTyping = (value) => {

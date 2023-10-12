@@ -31,7 +31,9 @@ export const subscribeToRenameChannel = (callback) => {
 
 // creating emits
 
-export const emitNewMessage = (message) => socket.emit('newMessage', message);
+export const emitNewMessage = (message, confirmationCallback) => {
+  socket.emit('newMessage', message, confirmationCallback);
+};
 
 export const emitNewChannel = (channelName) => socket.emit('newChannel', channelName);
 
