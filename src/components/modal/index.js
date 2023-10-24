@@ -1,8 +1,8 @@
-import AddChannelModalComponent from './addChannel/AddChannelModalComponent';
+import AddChannelForm from './addChannel/AddChannelForm';
 
-const modals = {
-  addChannel: <AddChannelModalComponent />,
+const forms = {
+  addChannel: <AddChannelForm />,
   hidden: null,
 };
 
-export default (modalName) => modals[modalName];
+export default (formName) => forms[formName];
