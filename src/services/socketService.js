@@ -39,6 +39,10 @@ export const emitNewChannel = (channelName, confirmationCallback) => {
   socket.emit('newChannel', channelName, confirmationCallback);
 };
 
-export const emitRemoveChannel = (channelId) => socket.emit('removeChannel', channelId);
+export const emitRemoveChannel = (channelId, confirmationCallback) => {
+  socket.emit('removeChannel', channelId, confirmationCallback);
+};
 
-export const emitRenameChannel = (renameInfo) => socket.emit('renameChannel', renameInfo);
+export const emitRenameChannel = (renameInfo, confirmationCallback) => {
+  socket.emit('renameChannel', renameInfo, confirmationCallback);
+};

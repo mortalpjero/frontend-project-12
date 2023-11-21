@@ -3,6 +3,7 @@ import { Dropdown, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { changeCurrChannel } from '../../slices/channelsSlice';
+import { changeModal, setChannelToRemove, setChannelToRename } from '../../slices/modalSlice';
 
 const RenderedChannels = () => {
   const dispatch = useDispatch();
@@ -21,8 +22,20 @@ const RenderedChannels = () => {
           </Button>
           <Dropdown.Toggle className={toggleClassNames} id="dropdown-basic" />
           <Dropdown.Menu>
-            <Dropdown.Item>Удалить</Dropdown.Item>
-            <Dropdown.Item>Переименовать</Dropdown.Item>
+            <Dropdown.Item onClick={() => {
+              dispatch(changeModal('removeChannel'));
+              dispatch(setChannelToRemove(channel.id));
+            }}
+            >
+              Удалить
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => {
+              dispatch(changeModal('renameChannel'));
+              dispatch(setChannelToRename(channel));
+            }}
+            >
+              Переименовать
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       );

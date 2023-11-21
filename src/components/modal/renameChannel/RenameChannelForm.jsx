@@ -1,12 +1,12 @@
 import React from 'react';
-import { Form, Button } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
+import { Form, Button } from 'react-bootstrap';
 
-import { emitNewChannel } from '../../../services/socketService';
+import { emitRenameChannel } from '../../../services/socketService';
 import { changeModal } from '../../../slices/modalSlice';
 
-const AddChannelForm = ({ validation }) => {
+const RenameChannelForm = ({ validation }) => {
   const dispatch = useDispatch();
 
   const handleClose = () => {
@@ -16,13 +16,16 @@ const AddChannelForm = ({ validation }) => {
   const formik = useFormik({
     initialValues: {
       channelName: '',
+      id: '',
     },
     validationSchema: validation,
-    onSubmit: (value) => {
-      const newChannelName = {
-        name: value.channelName,
+    onSubmit: (values) => {
+      console.log(values);
+      const renamedChannel = {
+        name: values.channelName,
+        id: values.id,
       };
-      emitNewChannel(newChannelName, (confirmation) => {
+      emitRenameChannel(renamedChannel, (confirmation) => {
         if (confirmation.status === 'ok') {
           handleClose();
         } else {
@@ -62,4 +65,4 @@ const AddChannelForm = ({ validation }) => {
   );
 };
 
-export default AddChannelForm;
+export default RenameChannelForm;

@@ -3,14 +3,19 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import getData from './getData';
-import { addChannel } from '../../slices/channelsSlice';
+import { addChannel, removeChannel, renameChannel } from '../../slices/channelsSlice';
 import { addMessage } from '../../slices/messagesSlice';
 import HeaderComponent from '../header/HeaderComponent';
 import ChannelsComponent from '../channels/ChannelsComponent';
 import MessagesFormComponent from '../messages/MessagesFormComponent';
 import MessagesComponent from '../messages/MessagesComponent';
 import ChannelInfoComponent from '../channels/ChannelInfoComponent';
-import { subscribeToNewChannels, subscribeToNewMessages } from '../../services/socketService';
+import {
+  subscribeToNewChannels,
+  subscribeToNewMessages,
+  subscribeToRemoveChannel,
+  subscribeToRenameChannel,
+} from '../../services/socketService';
 import ModalComponent from '../modal/ModalComponent';
 
 const ChatPage = () => {
@@ -41,6 +46,14 @@ const ChatPage = () => {
 
       subscribeToNewMessages((payload) => {
         dispatch(addMessage(payload));
+      });
+
+      subscribeToRemoveChannel((payload) => {
+        dispatch(removeChannel(payload));
+      });
+
+      subscribeToRenameChannel((payload) => {
+        dispatch(renameChannel(payload));
       });
     }
   }, [authToken, navigate, dispatch]);
