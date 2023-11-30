@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { Form, Button } from 'react-bootstrap';
 
@@ -8,6 +8,7 @@ import { changeModal } from '../../../slices/modalSlice';
 
 const RenameChannelForm = ({ validation }) => {
   const dispatch = useDispatch();
+  const channelToRename = useSelector((state) => state.modalInfo.channelToRename);
 
   const handleClose = () => {
     dispatch(changeModal('hidden'));
@@ -16,14 +17,12 @@ const RenameChannelForm = ({ validation }) => {
   const formik = useFormik({
     initialValues: {
       channelName: '',
-      id: '',
     },
     validationSchema: validation,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: (value) => {
       const renamedChannel = {
-        name: values.channelName,
-        id: values.id,
+        id: channelToRename,
+        name: value.channelName,
       };
       emitRenameChannel(renamedChannel, (confirmation) => {
         if (confirmation.status === 'ok') {

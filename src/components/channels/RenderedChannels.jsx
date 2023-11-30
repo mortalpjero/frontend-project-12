@@ -31,7 +31,7 @@ const RenderedChannels = () => {
             </Dropdown.Item>
             <Dropdown.Item onClick={() => {
               dispatch(changeModal('renameChannel'));
-              dispatch(setChannelToRename(channel));
+              dispatch(setChannelToRename(channel.id));
             }}
             >
               Переименовать

@@ -17,7 +17,7 @@ const modalSlice = createSlice({
       state.channelToRemove = action.payload;
     },
     setChannelToRename: (state, action) => {
-      state.channelToRemove = action.payload;
+      state.channelToRename = action.payload;
     },
   },
 });
