@@ -8,6 +8,7 @@ import { changeModal } from '../../../slices/modalSlice';
 
 const RenameChannelForm = ({ validation }) => {
   const dispatch = useDispatch();
+  const existingChannels = useSelector((state) => state.channelsInfo.channels);
   const channelToRename = useSelector((state) => state.modalInfo.channelToRename);
 
   const handleClose = () => {
@@ -24,13 +25,19 @@ const RenameChannelForm = ({ validation }) => {
         id: channelToRename,
         name: value.channelName,
       };
-      emitRenameChannel(renamedChannel, (confirmation) => {
-        if (confirmation.status === 'ok') {
-          handleClose();
-        } else {
-          console.error('Channel was not added, try again later');
-        }
-      });
+      const existingName = existingChannels.find((channel) => channel.name === value.channelName);
+      if (existingName) {
+        console.error('Name already exists');
+      }
+      if (!existingName) {
+        emitRenameChannel(renamedChannel, (confirmation) => {
+          if (confirmation.status === 'ok') {
+            handleClose();
+          } else {
+            console.error('Channel was not added, try again later');
+          }
+        });
+      }
     },
   });
 

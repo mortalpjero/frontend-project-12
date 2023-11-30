@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 
 import { emitNewChannel } from '../../../services/socketService';
@@ -8,6 +8,7 @@ import { changeModal } from '../../../slices/modalSlice';
 
 const AddChannelForm = ({ validation }) => {
   const dispatch = useDispatch();
+  const existingChannels = useSelector((state) => state.channelsInfo.channels);
 
   const handleClose = () => {
     dispatch(changeModal('hidden'));
@@ -22,13 +23,19 @@ const AddChannelForm = ({ validation }) => {
       const newChannelName = {
         name: value.channelName,
       };
-      emitNewChannel(newChannelName, (confirmation) => {
-        if (confirmation.status === 'ok') {
-          handleClose();
-        } else {
-          console.error('Channel was not added, try again later');
-        }
-      });
+      const existingName = existingChannels.find((channel) => channel.name === value.channelName);
+      if (existingName) {
+        console.error('Name already exists');
+      }
+      if (!existingName) {
+        emitNewChannel(newChannelName, (confirmation) => {
+          if (confirmation.status === 'ok') {
+            handleClose();
+          } else {
+            console.error('Channel was not added, try again later');
+          }
+        });
+      }
     },
   });
 
