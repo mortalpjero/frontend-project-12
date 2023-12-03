@@ -51,7 +51,6 @@ const RenderedChannels = () => {
 
   return channels.map((channel) => {
     const { removable, id } = channel;
-    console.log(removable);
     const itemClassNames = classNames(
       'w-100',
       'rounded-0',

@@ -1,7 +1,5 @@
 import * as Yup from 'yup';
-import AddChannelForm from './addChannel/AddChannelForm';
-import RemoveChannelForm from './removeChannel/RemoveChannelForm';
-import RenameChannelForm from './renameChannel/RenameChannelForm';
+import ChannelForm from './ChannelForm/ChannelForm';
 
 const channelSchema = Yup.object().shape({
   channelName: Yup.string()
@@ -11,9 +9,9 @@ const channelSchema = Yup.object().shape({
 });
 
 const forms = {
-  addChannel: <AddChannelForm validation={channelSchema} />,
-  removeChannel: <RemoveChannelForm />,
-  renameChannel: <RenameChannelForm validation={channelSchema} />,
+  addChannel: <ChannelForm validation={channelSchema} type="addChannel" />,
+  removeChannel: <ChannelForm type="removeChannel" />,
+  renameChannel: <ChannelForm validation={channelSchema} type="renameChannel" />,
   hidden: null,
 };
 
