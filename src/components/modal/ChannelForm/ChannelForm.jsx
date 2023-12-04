@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
-
 import { emitNewChannel, emitRenameChannel, emitRemoveChannel } from '../../../services/socketService';
 import { changeModal } from '../../../slices/modalSlice';
 
@@ -11,7 +10,7 @@ const ChannelForm = ({ validation, type }) => {
   const existingChannels = useSelector((state) => state.channelsInfo.channels);
   const channelToRename = useSelector((state) => state.modalInfo.channelToRename);
   const channelToRemove = useSelector((state) => state.modalInfo.channelToRemove);
-
+  const [error, setError] = useState(null);
   const handleClose = () => {
     dispatch(changeModal('hidden'));
   };
@@ -33,8 +32,10 @@ const ChannelForm = ({ validation, type }) => {
       const existingName = existingChannels.find((channel) => channel.name === value.channelName);
       if (existingName) {
         console.error('Name already exists');
+        setError('Канал с таким именем уже существует');
       }
       if (!existingName) {
+        setError(null);
         if (type === 'addChannel') {
           const newChannelName = {
             name: value.channelName,
@@ -70,12 +71,15 @@ const ChannelForm = ({ validation, type }) => {
             type="text"
             placeholder=""
             value={channelName}
-            onChange={handleChange}
-            className={formik.touched.channelName && formik.errors.channelName ? 'is-invalid' : ''}
+            onChange={(e) => {
+              handleChange(e);
+              setError(null);
+            }}
+            className={formik.touched.channelName && (formik.errors.channelName || error) ? 'is-invalid' : ''}
           />
           {formik.touched.channelName
-            && errors.channelName
-            && <div className="invalid-feedback">{formik.errors.channelName}</div>}
+            && (errors.channelName || error)
+            && <div className="invalid-feedback">{(formik.errors.channelName || error)}</div>}
         </Form.Group>
       )}
       <div className="d-flex justify-content-end mt-2">
