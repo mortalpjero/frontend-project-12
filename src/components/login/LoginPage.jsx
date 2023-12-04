@@ -5,7 +5,7 @@ import imagePath from '../../img/hexletLoginImage.jpeg';
 import LoginFormComponent from './loginFormComponent';
 import HeaderComponent from '../header/HeaderComponent';
 
-const SignupSchema = Yup.object().shape({
+const LoginSchema = Yup.object().shape({
   username: Yup.string(),
   password: Yup.string(),
 });
@@ -21,7 +21,7 @@ const LoginPage = () => (
               <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
                 <img src={imagePath} className="rounded-circle" alt="Войти" />
               </div>
-              <LoginFormComponent validation={SignupSchema} />
+              <LoginFormComponent validation={LoginSchema} />
             </div>
             <div className="card-footer p-4">
               <div className="text-center">
