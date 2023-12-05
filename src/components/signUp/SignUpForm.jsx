@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, FloatingLabel, Form } from 'react-bootstrap';
 import { useFormik } from 'formik';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import { authorize } from '../../slices/authorizationSlice';
+import { signUpPath } from '../../routes/routes';
+import loginUser from '../../services/loginUser';
 
 const SignUpForm = ({ validation }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [signUpError, setSignUpError] = useState(null);
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -10,7 +19,20 @@ const SignUpForm = ({ validation }) => {
       confirmPassword: '',
     },
     validationSchema: validation,
-    onSubmit: (values) => console.log(values),
+    onSubmit: async (values) => {
+      setSignUpError(null);
+      const { username, password } = values;
+      const newUserData = { username, password };
+      try {
+        await loginUser(newUserData, signUpPath);
+        dispatch(authorize({ username }));
+        navigate('/');
+      } catch (e) {
+        if (e.response.status === 409) {
+          setSignUpError('Имя пользователя уже существует');
+        }
+      }
+    },
   });
 
   const { username, password, confirmPassword } = formik.values;
@@ -34,7 +56,7 @@ const SignUpForm = ({ validation }) => {
             autoComplete="username"
             required=""
             id="username"
-            className={['form-control', errors.username ? 'is-invalid' : '']}
+            className={['form-control', (touched.username && errors.username) ? 'is-invalid' : '']}
             value={username}
             onChange={handleChange}
           />
@@ -53,7 +75,7 @@ const SignUpForm = ({ validation }) => {
             autoComplete="new-password"
             type="password"
             id="password"
-            className={['form-control', errors.password ? 'is-invalid' : '']}
+            className={['form-control', (touched.password && errors.password) ? 'is-invalid' : '']}
             value={password}
             onChange={handleChange}
           />
@@ -71,7 +93,7 @@ const SignUpForm = ({ validation }) => {
             autoComplete="new-password"
             type="password"
             id="confirmPassword"
-            className={['form-control', errors.confirmPassword ? 'is-invalid' : '']}
+            className={['form-control', (touched.confirmPassword && errors.confirmPassword) ? 'is-invalid' : '']}
             values={confirmPassword}
             onChange={handleChange}
           />
@@ -79,8 +101,9 @@ const SignUpForm = ({ validation }) => {
             && errors.confirmPassword
             && <Form.Text className="invalid-tooltip d-block">{errors.confirmPassword}</Form.Text>}
         </FloatingLabel>
+        {signUpError && <Form.Text className="invalid-tooltip d-block">{signUpError}</Form.Text>}
       </Form.Group>
-      <Button type="submit" className="w-100 btn-outline-primary">
+      <Button type="submit" className="w-100 outline-primary">
         Зарегистрироваться
       </Button>
     </Form>

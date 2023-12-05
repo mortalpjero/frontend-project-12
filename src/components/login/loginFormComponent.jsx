@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import { Button, FloatingLabel, Form } from 'react-bootstrap';
-import axios from 'axios';
 import classNames from 'classnames';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
-import { loginPath } from '../../routes/routes';
 import { authorize } from '../../slices/authorizationSlice';
+import { loginPath } from '../../routes/routes';
+import loginUser from '../../services/loginUser';
 
 const LoginFormComponent = ({ validation }) => {
   const dispatch = useDispatch();
@@ -22,13 +22,11 @@ const LoginFormComponent = ({ validation }) => {
     },
     validationSchema: validation,
     onSubmit: async (values) => {
+      const { username } = values;
       try {
-        const response = await axios.post(loginPath(), values);
-        const { token, username } = response.data;
-        localStorage.setItem('Authorization', token);
-        localStorage.setItem('username', username);
-        dispatch(authorize({ username }));
+        await loginUser(values, loginPath);
         setLoginStatus('authorized');
+        dispatch(authorize({ username }));
         navigate('/');
       } catch (e) {
         setLoginStatus('unauthorized');
