@@ -59,7 +59,7 @@ const ChatPage = () => {
         });
       }
     }
-  }, [authToken, navigate, dispatch]);
+  }, [authToken, navigate, dispatch, channels]);
 
   return (
     <>
