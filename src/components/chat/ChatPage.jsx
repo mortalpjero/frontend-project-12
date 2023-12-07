@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import getData from './getData';
@@ -21,6 +21,7 @@ import ModalComponent from '../modal/ModalComponent';
 const ChatPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const channels = useSelector((state) => state.channelsInfo.channels);
   const authToken = localStorage.getItem('Authorization');
 
   useEffect(() => {
@@ -28,33 +29,35 @@ const ChatPage = () => {
       navigate('/login');
     }
     if (authToken) {
-      getData(authToken)
-        .then((response) => response.data)
-        .then((data) => {
-          data.channels.forEach((channel) => {
-            dispatch(addChannel(channel));
-          });
-          data.messages.forEach((message) => {
-            dispatch(addMessage(message));
-          });
-        })
-        .catch((error) => console.error('Error:', error));
+      if (channels.length === 0) {
+        getData(authToken)
+          .then((response) => response.data)
+          .then((data) => {
+            data.channels.forEach((channel) => {
+              dispatch(addChannel(channel));
+            });
+            data.messages.forEach((message) => {
+              dispatch(addMessage(message));
+            });
+          })
+          .catch((error) => console.error('Error:', error));
 
-      subscribeToNewChannels((payload) => {
-        dispatch(addChannel(payload));
-      });
+        subscribeToNewChannels((payload) => {
+          dispatch(addChannel(payload));
+        });
 
-      subscribeToNewMessages((payload) => {
-        dispatch(addMessage(payload));
-      });
+        subscribeToNewMessages((payload) => {
+          dispatch(addMessage(payload));
+        });
 
-      subscribeToRemoveChannel((payload) => {
-        dispatch(removeChannel(payload));
-      });
+        subscribeToRemoveChannel((payload) => {
+          dispatch(removeChannel(payload));
+        });
 
-      subscribeToRenameChannel((payload) => {
-        dispatch(renameChannel(payload));
-      });
+        subscribeToRenameChannel((payload) => {
+          dispatch(renameChannel(payload));
+        });
+      }
     }
   }, [authToken, navigate, dispatch]);
 

@@ -13,7 +13,7 @@ const LoginFormComponent = ({ validation }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loginStatus, setLoginStatus] = useState('pending');
-  const controlClasses = classNames('form-constrol', loginStatus === 'unauthorized' ? 'is-invalid' : '');
+  const controlClasses = classNames('form-control', loginStatus === 'unauthorized' ? 'is-invalid' : '');
 
   const formik = useFormik({
     initialValues: {

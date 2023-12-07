@@ -46,3 +46,9 @@ export const emitRemoveChannel = (channelId, confirmationCallback) => {
 export const emitRenameChannel = (renameInfo, confirmationCallback) => {
   socket.emit('renameChannel', renameInfo, confirmationCallback);
 };
+
+// disconnecting
+
+export const disconnectUser = () => {
+  socket.disconnect();
+};
