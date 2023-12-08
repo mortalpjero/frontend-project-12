@@ -1,11 +1,13 @@
 import React from 'react';
 import { Dropdown, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { changeCurrChannel } from '../../slices/channelsSlice';
 import { changeModal, setChannelToRemove, setChannelToRename } from '../../slices/modalSlice';
 
 const RenderedChannels = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const currChannel = useSelector((state) => state.channelsInfo.currChannel);
   const channels = useSelector((state) => state.channelsInfo.channels);
@@ -27,14 +29,14 @@ const RenderedChannels = () => {
               dispatch(setChannelToRemove(channel.id));
             }}
             >
-              Удалить
+              {t('buttons.remove')}
             </Dropdown.Item>
             <Dropdown.Item onClick={() => {
               dispatch(changeModal('renameChannel'));
               dispatch(setChannelToRename(channel.id));
             }}
             >
-              Переименовать
+              {t('buttons.rename')}
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

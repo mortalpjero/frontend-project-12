@@ -2,14 +2,19 @@ import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
+import { useTranslation } from 'react-i18next';
+
 import { emitNewChannel, emitRenameChannel, emitRemoveChannel } from '../../../services/socketService';
+import { changeCurrChannel } from '../../../slices/channelsSlice';
 import { changeModal } from '../../../slices/modalSlice';
 
 const ChannelForm = ({ validation, type }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const existingChannels = useSelector((state) => state.channelsInfo.channels);
   const channelToRename = useSelector((state) => state.modalInfo.channelToRename);
   const channelToRemove = useSelector((state) => state.modalInfo.channelToRemove);
+  const currChannel = useSelector((state) => state.channelsInfo.currChannel);
   const [error, setError] = useState(null);
   const handleClose = () => {
     dispatch(changeModal('hidden'));
@@ -19,7 +24,7 @@ const ChannelForm = ({ validation, type }) => {
     if (confirmation.status === 'ok') {
       handleClose();
     } else {
-      console.error('Channel was not added, try again later');
+      console.error(t('errors.channelNotAdded'));
     }
   };
 
@@ -31,8 +36,7 @@ const ChannelForm = ({ validation, type }) => {
     onSubmit: (value) => {
       const existingName = existingChannels.find((channel) => channel.name === value.channelName);
       if (existingName) {
-        console.error('Name already exists');
-        setError('Канал с таким именем уже существует');
+        setError(t('errors.existingChannel'));
       }
       if (!existingName) {
         setError(null);
@@ -53,6 +57,12 @@ const ChannelForm = ({ validation, type }) => {
           const channelToRemoveId = {
             id: channelToRemove,
           };
+          if (currChannel.id === channelToRemove) {
+            dispatch(changeCurrChannel({
+              id: 1,
+              name: 'general',
+            }));
+          }
           emitRemoveChannel(channelToRemoveId, handleConfirmation);
         }
       }
@@ -84,10 +94,10 @@ const ChannelForm = ({ validation, type }) => {
       )}
       <div className="d-flex justify-content-end mt-2">
         <Button variant="secondary" onClick={handleClose} className="me-2">
-          Отменить
+          {t('buttons.cancel')}
         </Button>
         <Button variant={type === 'removeChannel' ? 'danger' : 'primary'} type="submit">
-          {type === 'removeChannel' ? 'Удалить' : 'Отправить'}
+          {type === 'removeChannel' ? t('buttons.remove') : t('buttons.send')}
         </Button>
       </div>
     </Form>

@@ -4,12 +4,14 @@ import { Button, FloatingLabel, Form } from 'react-bootstrap';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import { authorize } from '../../slices/authorizationSlice';
 import { loginPath } from '../../routes/routes';
 import loginUser from '../../services/loginUser';
 
 const LoginFormComponent = ({ validation }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loginStatus, setLoginStatus] = useState('pending');
@@ -39,17 +41,17 @@ const LoginFormComponent = ({ validation }) => {
 
   return (
     <Form onSubmit={formik.handleSubmit} className="d-grid col-12 col-md-6 mt-3 mt-mb-0">
-      <h1 className="text-center mb-4">Войти</h1>
+      <h1 className="text-center mb-4">{t('buttons.logIn')}</h1>
       <Form.Group className="mb-3">
         <FloatingLabel
-          label="Ваш ник"
+          label={t('userInfo.login')}
           className="mb-3"
         >
           <Form.Control
             name="username"
             autoComplete="username"
             required=""
-            placeholder="Ваш ник"
+            placeholder={t('userInfo.login')}
             id="username"
             className={controlClasses}
             onChange={handleChange}
@@ -59,24 +61,24 @@ const LoginFormComponent = ({ validation }) => {
       </Form.Group>
       <Form.Group className="mb-4">
         <FloatingLabel
-          label="Пароль"
+          label={t('userInfo.password')}
           className="mb-3"
         >
           <Form.Control
             name="password"
             autoComplete="current-password"
             required=""
-            placeholder="Пароль"
+            placeholder={t('userInfo.password')}
             type="password"
             id="password"
             className={controlClasses}
             onChange={handleChange}
             value={password}
           />
-          {loginStatus === 'unauthorized' && <Form.Text className="invalid-tooltip d-block">Неверные имя пользователя или пароль</Form.Text>}
+          {loginStatus === 'unauthorized' && <Form.Text className="invalid-tooltip d-block">{t('errors.wrongLoginInfo')}</Form.Text>}
         </FloatingLabel>
       </Form.Group>
-      <Button variant="outline-primary" size="lg" type="submit">Войти</Button>
+      <Button variant="outline-primary" size="lg" type="submit">{t('buttons.logIn')}</Button>
     </Form>
   );
 };

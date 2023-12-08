@@ -1,11 +1,15 @@
 import * as Yup from 'yup';
+import i18n from 'i18next';
+
 import ChannelForm from './ChannelForm/ChannelForm';
+
+const { t } = i18n;
 
 const channelSchema = Yup.object().shape({
   channelName: Yup.string()
-    .min(3, 'От 3 до 20 символов')
-    .max(20, 'От 3 до 20 символов')
-    .required('Обязательное поле'),
+    .min(3, t('errors.charLength'))
+    .max(20, t('errors.charLength'))
+    .required(t('errors.required')),
 });
 
 const forms = {

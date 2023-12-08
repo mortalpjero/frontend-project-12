@@ -3,12 +3,14 @@ import { Button, FloatingLabel, Form } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { authorize } from '../../slices/authorizationSlice';
 import { signUpPath } from '../../routes/routes';
 import loginUser from '../../services/loginUser';
 
 const SignUpForm = ({ validation }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [signUpError, setSignUpError] = useState(null);
@@ -29,7 +31,7 @@ const SignUpForm = ({ validation }) => {
         navigate('/');
       } catch (e) {
         if (e.response.status === 409) {
-          setSignUpError('Имя пользователя уже существует');
+          setSignUpError(t('errors.existingName'));
         }
       }
     },
@@ -48,7 +50,7 @@ const SignUpForm = ({ validation }) => {
       <h1 className="text-center mb-4">Регистрация</h1>
       <Form.Group className="form-floating mb-3">
         <FloatingLabel
-          label="Имя пользователя"
+          label={t('userInfo.login')}
         >
           <Form.Control
             placeholder=""
@@ -66,7 +68,7 @@ const SignUpForm = ({ validation }) => {
         </FloatingLabel>
       </Form.Group>
       <Form.Group className="form-floating mb-3">
-        <FloatingLabel label="Пароль">
+        <FloatingLabel label={t('userInfo.password')}>
           <Form.Control
             placeholder=""
             name="password"
@@ -85,7 +87,7 @@ const SignUpForm = ({ validation }) => {
         </FloatingLabel>
       </Form.Group>
       <Form.Group className="form-floating mb-4">
-        <FloatingLabel label="Подтвердите пароль">
+        <FloatingLabel label={t('userInfo.confirmPassword')}>
           <Form.Control
             placeholder=""
             name="confirmPassword"
@@ -104,7 +106,7 @@ const SignUpForm = ({ validation }) => {
         {signUpError && <Form.Text className="invalid-tooltip d-block">{signUpError}</Form.Text>}
       </Form.Group>
       <Button type="submit" className="w-100 outline-primary">
-        Зарегистрироваться
+        {t('buttons.register')}
       </Button>
     </Form>
   );
